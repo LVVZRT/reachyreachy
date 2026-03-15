@@ -1,5 +1,5 @@
 getgenv().WhitelistSettings = {
-    Enabled = true,
+    Enabled = false,
     Players = {
         1,
         2,
