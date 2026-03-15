@@ -1,66 +1,8 @@
-getgenv().WhitelistSettings = {
-    Enabled = false,
-    Players = {
-        1,
-        2,
-        3
-    }
-}
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+-- =====================================================
+--                    MAIN SCRIPT
+-- =====================================================
 
-local AlertSound = Instance.new("Sound")
-AlertSound.SoundId = "rbxassetid://102770722936174"
-AlertSound.Volume = 1
-AlertSound.Parent = game:GetService("SoundService")
-
-local function IsWhitelisted(plr)
-    for _,id in ipairs(WhitelistSettings.Players) do
-        if plr.UserId == id then
-            return true
-        end
-    end
-    return false
-end
-
-local function ApplySpeed()
-    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    local humanoid = char:WaitForChild("Humanoid")
-
-    task.spawn(function()
-        while WhitelistSettings.Enabled do
-            humanoid.WalkSpeed = 100
-            humanoid.JumpPower = 100
-            task.wait()
-        end
-    end)
-end
-
-local function CheckWhitelist()
-
-    if not WhitelistSettings.Enabled then
-        return
-    end
-
-    for _,plr in ipairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and not IsWhitelisted(plr) then
-            AlertSound:Play()
-            ApplySpeed()
-            break
-        end
-    end
-
-end
-
-CheckWhitelist()
-
-Players.PlayerAdded:Connect(function(plr)
-    if WhitelistSettings.Enabled and not IsWhitelisted(plr) then
-        AlertSound:Play()
-        ApplySpeed()
-    end
-end)
 
 getgenv().S_Hold = {
     Enabled = false;
@@ -127,6 +69,7 @@ local FireDamageBoost = function()
             for _, part in ipairs(target:GetChildren()) do
                 if part:IsA("BasePart") then
                     local touchCount = math.random(12, 18)
+
                     for i = 1, touchCount do
                         handle:TouchStarted(part)
                         handle:TouchEnded(part)
@@ -155,16 +98,26 @@ local StopBoostLoop = function()
 end
 
 local UpdateEnemyHandles = function()
+
     for _, Player in pairs(game.Players:GetPlayers()) do
-        if Player == game.Players.LocalPlayer then continue end
+
+        if Player == game.Players.LocalPlayer then
+            continue
+        end
 
         local Character = Player.Character
-        if not Character then continue end
+        if not Character then
+            continue
+        end
 
         for _, Child in pairs(Character:GetChildren()) do
+
             if Child:IsA('Tool') then
+
                 local Handle = Child:FindFirstChild('Handle')
+
                 if Handle then
+
                     if not OriginalTouchStates[Handle] then
                         OriginalTouchStates[Handle] = {
                             CanTouch = Handle.CanTouch,
@@ -177,8 +130,13 @@ local UpdateEnemyHandles = function()
                     else
                         Handle.CanTouch = OriginalTouchStates[Handle].CanTouch
                     end
+
                 end
+
             end
+
         end
+
     end
+
 end
